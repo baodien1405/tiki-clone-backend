@@ -12,7 +12,7 @@ const StartServer = async () => {
 
   await dbConnection()
 
-  app.use('/user', UserRoute)
+  app.use('/api/user', UserRoute)
   app.get('/test', (req, res) => {
     res.send('Test API')
   })

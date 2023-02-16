@@ -1,7 +1,14 @@
 import { User } from '../models/index.js'
+import {
+  GenerateSalt,
+  GeneratePassword,
+  ValidatePassword,
+  GenerateAccessToken,
+  GenerateRefreshToken
+} from '../utility/index.js'
 
-export const createUserService = async (newUser) => {
-  const { name, email, password, confirmPassword, phone } = newUser
+export const createUser = async (newUser) => {
+  const { name, email, password, phone } = newUser
   try {
     const existUser = await User.findOne({
       email: email
@@ -14,11 +21,14 @@ export const createUserService = async (newUser) => {
       }
     }
 
+    const salt = await GenerateSalt()
+    const userPassword = await GeneratePassword(password, salt)
+
     const user = await User.create({
       name,
       email,
-      password,
-      confirmPassword,
+      password: userPassword,
+      salt: salt,
       phone
     })
 
@@ -27,6 +37,45 @@ export const createUserService = async (newUser) => {
         status: 'OK',
         message: 'Success',
         data: user
+      }
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const loginUser = async (userLogin) => {
+  const { email, password } = userLogin
+  try {
+    const existUser = await User.findOne({
+      email: email
+    })
+
+    if (!existUser) {
+      return {
+        status: 'OK',
+        message: 'The user is not defined'
+      }
+    }
+
+    const validation = await ValidatePassword(password, existUser.password, existUser.salt)
+
+    if (validation) {
+      const accessToken = GenerateAccessToken({
+        _id: existUser._id,
+        isAdmin: existUser.isAdmin
+      })
+
+      const refreshToken = GenerateRefreshToken({
+        _id: existUser._id,
+        isAdmin: existUser.isAdmin
+      })
+
+      return {
+        status: 'OK',
+        message: 'Success',
+        access_token: accessToken,
+        refresh_token: refreshToken
       }
     }
   } catch (error) {
