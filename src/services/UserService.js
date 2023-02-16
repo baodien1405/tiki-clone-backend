@@ -82,3 +82,28 @@ export const loginUser = async (userLogin) => {
     console.log(error)
   }
 }
+
+export const updateUser = async (id, data) => {
+  try {
+    const existUser = await User.findById({
+      _id: id
+    })
+
+    if (!existUser) {
+      return {
+        status: 'OK',
+        message: 'The user is not defined'
+      }
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(id, data, { new: true })
+
+    return {
+      status: 'OK',
+      message: 'Success',
+      data: updatedUser
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}

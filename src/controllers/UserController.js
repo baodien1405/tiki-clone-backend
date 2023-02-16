@@ -1,4 +1,4 @@
-import { createUser, loginUser } from '../services/index.js'
+import { createUser, loginUser, updateUser } from '../services/index.js'
 
 export const userSignUp = async (req, res) => {
   try {
@@ -57,6 +57,23 @@ export const userSignIn = async (req, res) => {
     }
 
     return res.status(404).json({ message: 'Login error' })
+  } catch (error) {
+    return res.status(404).json({
+      message: error
+    })
+  }
+}
+
+export const updateUserProfile = async (req, res) => {
+  try {
+    const userId = req.params.userId
+    const response = await updateUser(userId, req.body)
+
+    if (response) {
+      return res.status(200).json(response)
+    }
+
+    return res.status(404).json({ message: 'Update error' })
   } catch (error) {
     return res.status(404).json({
       message: error

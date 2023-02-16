@@ -13,9 +13,6 @@ const StartServer = async () => {
   await dbConnection()
 
   app.use('/api/user', UserRoute)
-  app.get('/test', (req, res) => {
-    res.send('Test API')
-  })
 
   app.listen(PORT, () => {
     console.log(`Listening to the port ${PORT}`)
