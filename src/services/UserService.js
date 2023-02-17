@@ -1,10 +1,10 @@
 import { User } from '../models/index.js'
 import {
-  GenerateSalt,
-  GeneratePassword,
-  ValidatePassword,
-  GenerateAccessToken,
-  GenerateRefreshToken
+  generateSalt,
+  generatePassword,
+  validatePassword,
+  generateAccessToken,
+  generateRefreshToken
 } from '../utility/index.js'
 
 export const createUser = async (newUser) => {
@@ -21,8 +21,8 @@ export const createUser = async (newUser) => {
       }
     }
 
-    const salt = await GenerateSalt()
-    const userPassword = await GeneratePassword(password, salt)
+    const salt = await generateSalt()
+    const userPassword = await generatePassword(password, salt)
 
     const user = await User.create({
       name,
@@ -58,15 +58,15 @@ export const loginUser = async (userLogin) => {
       }
     }
 
-    const validation = await ValidatePassword(password, existUser.password, existUser.salt)
+    const validation = await validatePassword(password, existUser.password, existUser.salt)
 
     if (validation) {
-      const accessToken = GenerateAccessToken({
+      const accessToken = generateAccessToken({
         _id: existUser._id,
         isAdmin: existUser.isAdmin
       })
 
-      const refreshToken = GenerateRefreshToken({
+      const refreshToken = generateRefreshToken({
         _id: existUser._id,
         isAdmin: existUser.isAdmin
       })
@@ -85,9 +85,7 @@ export const loginUser = async (userLogin) => {
 
 export const updateUser = async (id, data) => {
   try {
-    const existUser = await User.findById({
-      _id: id
-    })
+    const existUser = await User.findById(id)
 
     if (!existUser) {
       return {
@@ -102,6 +100,64 @@ export const updateUser = async (id, data) => {
       status: 'OK',
       message: 'Success',
       data: updatedUser
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const deleteUser = async (id) => {
+  try {
+    const existUser = await User.findById(id)
+
+    if (!existUser) {
+      return {
+        status: 'OK',
+        message: 'The user is not defined'
+      }
+    }
+
+    await User.findByIdAndDelete(id)
+
+    return {
+      status: 'OK',
+      message: 'Delete user success'
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const getAllUserService = async () => {
+  try {
+    const users = await User.find()
+    if (users) {
+      return {
+        status: 'OK',
+        message: 'Success',
+        data: users
+      }
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const getDetailUserService = async (id) => {
+  try {
+    const existUser = await User.findById(id)
+
+    if (!existUser) {
+      return {
+        status: 'OK',
+        message: 'The user is not found'
+      }
+    }
+
+    return {
+      status: 'OK',
+      message: 'Success',
+      data: existUser
     }
   } catch (error) {
     console.log(error)

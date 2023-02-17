@@ -1,4 +1,11 @@
-import { createUser, loginUser, updateUser } from '../services/index.js'
+import {
+  createUser,
+  loginUser,
+  updateUser,
+  deleteUser,
+  getAllUserService,
+  getDetailUserService
+} from '../services/index.js'
 
 export const userSignUp = async (req, res) => {
   try {
@@ -73,7 +80,57 @@ export const updateUserProfile = async (req, res) => {
       return res.status(200).json(response)
     }
 
-    return res.status(404).json({ message: 'Update error' })
+    return res.status(404).json({ message: 'Update user error' })
+  } catch (error) {
+    return res.status(404).json({
+      message: error
+    })
+  }
+}
+
+export const deleteUserProfile = async (req, res) => {
+  try {
+    const userId = req.params.userId
+    const response = await deleteUser(userId)
+
+    if (response) {
+      return res.status(200).json(response)
+    }
+
+    return res.status(404).json({ message: 'Delete user error' })
+  } catch (error) {
+    return res.status(404).json({
+      message: error
+    })
+  }
+}
+
+export const getAllUser = async (req, res) => {
+  try {
+    const response = await getAllUserService()
+
+    if (response) {
+      return res.status(200).json(response)
+    }
+
+    return res.status(404).json({ message: 'Fetch users error' })
+  } catch (error) {
+    return res.status(404).json({
+      message: error
+    })
+  }
+}
+
+export const getDetailUser = async (req, res) => {
+  try {
+    const userId = req.params.userId
+    const response = await getDetailUserService(userId)
+
+    if (response) {
+      return res.status(200).json(response)
+    }
+
+    return res.status(404).json({ message: 'Get detail user error' })
   } catch (error) {
     return res.status(404).json({
       message: error
