@@ -2,7 +2,7 @@ import express from 'express'
 import { PORT } from './src/config/index.js'
 import dbConnection from './src/services/Database.js'
 import * as dotenv from 'dotenv'
-import { UserRoute } from './src/routes/index.js'
+import { UserRoute, ProductRoute } from './src/routes/index.js'
 dotenv.config()
 
 const StartServer = async () => {
@@ -13,6 +13,7 @@ const StartServer = async () => {
   await dbConnection()
 
   app.use('/api/user', UserRoute)
+  app.use('/api/product', ProductRoute)
 
   app.listen(PORT, () => {
     console.log(`Listening to the port ${PORT}`)
