@@ -81,14 +81,23 @@ export const deleteProductService = async (id) => {
   }
 }
 
-export const getAllProductService = async () => {
+export const getAllProductService = async (_page = 0, _limit = 2) => {
   try {
+    const totalProduct = await Product.count()
     const products = await Product.find()
+      .limit(_limit)
+      .skip(_page * _limit)
+
     if (products) {
       return {
         status: 'OK',
         message: 'Success',
-        data: products
+        data: products,
+        pagination: {
+          _page: _page + 1,
+          _limit: _limit,
+          _totalRows: totalProduct
+        }
       }
     }
   } catch (error) {

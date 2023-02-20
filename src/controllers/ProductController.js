@@ -62,7 +62,8 @@ export const deleteProduct = async (req, res) => {
 
 export const getAllProduct = async (req, res) => {
   try {
-    const response = await getAllProductService()
+    const { _page, _limit } = req.query
+    const response = await getAllProductService(Number(_page), Number(_limit))
 
     if (response) {
       return res.status(200).json(response)
