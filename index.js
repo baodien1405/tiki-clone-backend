@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import { PORT } from './src/config/index.js'
 import dbConnection from './src/services/Database.js'
 import * as dotenv from 'dotenv'
@@ -7,6 +8,7 @@ dotenv.config()
 
 const StartServer = async () => {
   const app = express()
+  app.use(cors())
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
 

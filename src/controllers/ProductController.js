@@ -64,7 +64,7 @@ export const getAllProduct = async (req, res) => {
   try {
     const { _page, _limit, _sort, _order, name } = req.query
     const response = await getAllProductService(
-      Number(_page || 0),
+      Number(_page || 1),
       Number(_limit || 8),
       _sort || 'name',
       _order || 'asc',

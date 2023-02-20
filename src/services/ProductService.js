@@ -87,7 +87,7 @@ export const getAllProductService = async (_page, _limit, _sort, _order, name) =
     const filtered = name ? { name: { $regex: name } } : {}
     const products = await Product.find(filtered)
       .limit(_limit)
-      .skip(_page * _limit)
+      .skip((_page - 1) * _limit)
       .sort({ [_sort]: _order })
 
     if (products) {
@@ -96,7 +96,7 @@ export const getAllProductService = async (_page, _limit, _sort, _order, name) =
         message: 'Success',
         data: products,
         pagination: {
-          _page: _page + 1,
+          _page: _page,
           _limit: _limit,
           _totalRows: totalProduct
         }
