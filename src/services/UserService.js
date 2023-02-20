@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken'
+import { REFRESH_TOKEN } from '../config/index.js'
 import { User } from '../models/index.js'
 import {
   generateSalt,
@@ -161,5 +163,26 @@ export const getDetailUserService = async (id) => {
     }
   } catch (error) {
     console.log(error)
+  }
+}
+
+export const refreshTokenService = async (token) => {
+  try {
+    const payload = await jwt.verify(token, REFRESH_TOKEN)
+    const accessToken = await generateAccessToken({
+      _id: payload._id,
+      isAdmin: payload.isAdmin
+    })
+
+    return {
+      status: 'OK',
+      message: 'Success',
+      access_token: accessToken
+    }
+  } catch (error) {
+    return {
+      status: 'Error',
+      message: 'The authentication'
+    }
   }
 }

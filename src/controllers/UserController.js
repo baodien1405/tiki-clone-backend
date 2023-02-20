@@ -4,7 +4,8 @@ import {
   updateUser,
   deleteUser,
   getAllUserService,
-  getDetailUserService
+  getDetailUserService,
+  refreshTokenService
 } from '../services/index.js'
 
 export const userSignUp = async (req, res) => {
@@ -131,6 +132,30 @@ export const getDetailUser = async (req, res) => {
     }
 
     return res.status(404).json({ message: 'Get detail user error' })
+  } catch (error) {
+    return res.status(404).json({
+      message: error
+    })
+  }
+}
+
+export const refreshToken = async (req, res) => {
+  try {
+    const token = req.get('Authorization').split(' ')[1]
+    if (!token) {
+      return res.status(200).json({
+        status: 'Error',
+        message: 'Token is required'
+      })
+    }
+
+    const response = await refreshTokenService(token)
+
+    if (response) {
+      return res.status(200).json(response)
+    }
+
+    return res.status(404).json({ message: 'Failed to refresh token' })
   } catch (error) {
     return res.status(404).json({
       message: error
