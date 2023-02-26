@@ -37,11 +37,12 @@ export const ValidateSignature = async (req) => {
 
 export const ValidateSignatureForUser = async (req, res) => {
   const signature = req.get('Authorization')
+  console.log('🚀 ~ ValidateSignatureForUser ~ signature:', signature)
   const userId = req.params.userId
 
   if (signature) {
     const payload = await jwt.verify(signature.split(' ')[1], ACCESS_TOKEN)
-    if (payload.isAdmin || payload._id === userId) {
+    if (payload.isAdmin || payload.id === userId) {
       return true
     }
   }

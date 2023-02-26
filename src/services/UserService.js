@@ -9,8 +9,7 @@ import {
   generateRefreshToken
 } from '../utility/index.js'
 
-export const createUser = async (newUser) => {
-  const { name, email, password, phone } = newUser
+export const createUser = async ({ email, password }) => {
   try {
     const existUser = await User.findOne({
       email: email
@@ -18,7 +17,7 @@ export const createUser = async (newUser) => {
 
     if (existUser !== null) {
       return {
-        status: 'OK',
+        status: 'ERROR',
         message: 'The email is already'
       }
     }
@@ -27,17 +26,15 @@ export const createUser = async (newUser) => {
     const userPassword = await generatePassword(password, salt)
 
     const user = await User.create({
-      name,
       email,
       password: userPassword,
-      salt: salt,
-      phone
+      salt: salt
     })
 
     if (user) {
       return {
         status: 'OK',
-        message: 'Success',
+        message: 'Create account success!',
         data: user
       }
     }
@@ -55,7 +52,7 @@ export const loginUser = async (userLogin) => {
 
     if (!existUser) {
       return {
-        status: 'OK',
+        status: 'ERROR',
         message: 'The user is not defined'
       }
     }
@@ -64,18 +61,18 @@ export const loginUser = async (userLogin) => {
 
     if (validation) {
       const accessToken = generateAccessToken({
-        _id: existUser._id,
+        id: existUser._id,
         isAdmin: existUser.isAdmin
       })
 
       const refreshToken = generateRefreshToken({
-        _id: existUser._id,
+        id: existUser._id,
         isAdmin: existUser.isAdmin
       })
 
       return {
         status: 'OK',
-        message: 'Success',
+        message: 'Login success!',
         access_token: accessToken,
         refresh_token: refreshToken
       }
@@ -170,7 +167,7 @@ export const refreshTokenService = async (token) => {
   try {
     const payload = await jwt.verify(token, REFRESH_TOKEN)
     const accessToken = await generateAccessToken({
-      _id: payload._id,
+      id: payload.id,
       isAdmin: payload.isAdmin
     })
 

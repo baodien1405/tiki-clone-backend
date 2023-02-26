@@ -10,28 +10,32 @@ import {
 
 export const userSignUp = async (req, res) => {
   try {
-    const { name, email, password, confirmPassword, phone } = req.body
+    const { email, password, confirmPassword } = req.body
     const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
     const isValidEmail = regex.test(email)
 
-    if (!name || !email || !password || !confirmPassword || !phone) {
-      return res.status(200).json({
+    if (!email || !password || !confirmPassword) {
+      return res.status(422).json({
         status: 'ERROR',
         message: 'The input is required'
       })
     } else if (!isValidEmail) {
-      return res.status(200).json({
+      return res.status(422).json({
         status: 'ERROR',
         message: 'The input is valid email'
       })
     } else if (password !== confirmPassword) {
-      return res.status(200).json({
+      return res.status(422).json({
         status: 'ERROR',
         message: 'The input is is equal confirm password'
       })
     }
 
     const response = await createUser(req.body)
+    if (response.status === 'ERROR') {
+      return res.status(422).json(response)
+    }
+
     return res.status(200).json(response)
   } catch (error) {
     return res.status(404).json({
@@ -47,12 +51,12 @@ export const userSignIn = async (req, res) => {
     const isValidEmail = regex.test(email)
 
     if (!email || !password) {
-      return res.status(200).json({
+      return res.status(422).json({
         status: 'ERROR',
         message: 'The input is required'
       })
     } else if (!isValidEmail) {
-      return res.status(200).json({
+      return res.status(422).json({
         status: 'ERROR',
         message: 'The input is valid email'
       })
@@ -60,8 +64,19 @@ export const userSignIn = async (req, res) => {
 
     const response = await loginUser(req.body)
 
-    if (response) {
-      return res.status(201).json(response)
+    if (response.status === 'ERROR') {
+      return res.status(422).json(response)
+    }
+
+    if (response.status === 'OK') {
+      const { refresh_token, ...newResponse } = response
+
+      res.cookie('refresh_token', refresh_token, {
+        HttpOnly: true,
+        Secure: true
+      })
+
+      return res.status(201).json(newResponse)
     }
 
     return res.status(404).json({ message: 'Login error' })
@@ -141,7 +156,7 @@ export const getDetailUser = async (req, res) => {
 
 export const refreshToken = async (req, res) => {
   try {
-    const token = req.get('Authorization').split(' ')[1]
+    const token = req.cookies.refresh_token
     if (!token) {
       return res.status(200).json({
         status: 'Error',
