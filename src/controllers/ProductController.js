@@ -1,8 +1,8 @@
 import {
   createProductService,
   updateProductService,
-  getAllProductService,
-  getDetailProductService,
+  getProductsService,
+  getProductService,
   deleteProductService
 } from '../services/index.js'
 
@@ -26,7 +26,7 @@ export const createProduct = async (req, res) => {
   }
 }
 
-export const updateProduct = async (req, res) => {
+export const updateProductById = async (req, res) => {
   try {
     const productId = req.params.id
     const response = await updateProductService(productId, req.body)
@@ -43,7 +43,7 @@ export const updateProduct = async (req, res) => {
   }
 }
 
-export const deleteProduct = async (req, res) => {
+export const deleteProductById = async (req, res) => {
   try {
     const productId = req.params.id
     const response = await deleteProductService(productId)
@@ -60,10 +60,10 @@ export const deleteProduct = async (req, res) => {
   }
 }
 
-export const getAllProduct = async (req, res) => {
+export const getProducts = async (req, res) => {
   try {
     const { _page, _limit, _sort, _order, name } = req.query
-    const response = await getAllProductService(
+    const response = await getProductsService(
       Number(_page || 1),
       Number(_limit || 8),
       _sort || 'name',
@@ -83,10 +83,10 @@ export const getAllProduct = async (req, res) => {
   }
 }
 
-export const getDetailProduct = async (req, res) => {
+export const getProductById = async (req, res) => {
   try {
     const productId = req.params.id
-    const response = await getDetailProductService(productId)
+    const response = await getProductService(productId)
 
     if (response) {
       return res.status(200).json(response)

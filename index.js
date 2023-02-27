@@ -7,18 +7,30 @@ import morgan from 'morgan'
 import * as dotenv from 'dotenv'
 
 import { PORT } from './src/config/index.js'
-import dbConnection from './src/services/Database.js'
-import { UserRoute, ProductRoute } from './src/routes/index.js'
+import * as dbConnection from './src/services/Database.js'
+import App from './src/utility/ExpressApp.js'
 dotenv.config()
 
 const DELAY = 0
 
 const StartServer = async () => {
   const app = express()
+
   app.use(function (req, res, next) {
     setTimeout(next, DELAY)
   })
-  // init middlewares of systems
+
+  // CACHE for GET requests
+  // app.use(function (req, res, next) {
+  //   const period = 60 * 5
+  //   if (req.method == 'GET') {
+  //     res.set("Cache-control", `public, max-age=${period}`)
+  //   } else {
+  //     res.set("Cache-control", "no-store")
+  //   }
+  //   next()
+  // })
+
   app.use(morgan('dev'))
   app.use(helmet())
   app.use(compression())
@@ -27,10 +39,8 @@ const StartServer = async () => {
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
 
-  await dbConnection()
-
-  app.use('/api/user', UserRoute)
-  app.use('/api/product', ProductRoute)
+  dbConnection
+  await App(app)
 
   app.listen(PORT, () => {
     console.log(`Listening to the port ${PORT}`)

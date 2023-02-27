@@ -37,8 +37,7 @@ export const ValidateSignature = async (req) => {
 
 export const ValidateSignatureForUser = async (req, res) => {
   const signature = req.get('Authorization')
-  console.log('🚀 ~ ValidateSignatureForUser ~ signature:', signature)
-  const userId = req.params.userId
+  const userId = req.params.id
 
   if (signature) {
     const payload = await jwt.verify(signature.split(' ')[1], ACCESS_TOKEN)

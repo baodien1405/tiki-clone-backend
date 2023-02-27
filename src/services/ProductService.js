@@ -81,7 +81,7 @@ export const deleteProductService = async (id) => {
   }
 }
 
-export const getAllProductService = async (_page, _limit, _sort, _order, name) => {
+export const getProductsService = async (_page, _limit, _sort, _order, name) => {
   try {
     const totalProduct = await Product.count()
     const filtered = name ? { name: { $regex: name } } : {}
@@ -107,7 +107,7 @@ export const getAllProductService = async (_page, _limit, _sort, _order, name) =
   }
 }
 
-export const getDetailProductService = async (id) => {
+export const getProductService = async (id) => {
   try {
     const existProduct = await Product.findById(id)
 

@@ -3,8 +3,8 @@ import {
   loginUser,
   updateUser,
   deleteUser,
-  getAllUserService,
-  getDetailUserService,
+  getUsersService,
+  getDetailUser,
   refreshTokenService
 } from '../services/index.js'
 
@@ -72,8 +72,9 @@ export const userSignIn = async (req, res) => {
       const { refresh_token, ...newResponse } = response
 
       res.cookie('refresh_token', refresh_token, {
-        HttpOnly: true,
-        Secure: true
+        httpOnly: true,
+        secure: false,
+        samesite: 'strict'
       })
 
       return res.status(201).json(newResponse)
@@ -87,9 +88,9 @@ export const userSignIn = async (req, res) => {
   }
 }
 
-export const updateUserProfile = async (req, res) => {
+export const updateUserById = async (req, res) => {
   try {
-    const userId = req.params.userId
+    const userId = req.params.id
     const response = await updateUser(userId, req.body)
 
     if (response) {
@@ -104,9 +105,9 @@ export const updateUserProfile = async (req, res) => {
   }
 }
 
-export const deleteUserProfile = async (req, res) => {
+export const deleteUserById = async (req, res) => {
   try {
-    const userId = req.params.userId
+    const userId = req.params.id
     const response = await deleteUser(userId)
 
     if (response) {
@@ -121,9 +122,9 @@ export const deleteUserProfile = async (req, res) => {
   }
 }
 
-export const getAllUser = async (req, res) => {
+export const getUsers = async (req, res) => {
   try {
-    const response = await getAllUserService()
+    const response = await getUsersService()
 
     if (response) {
       return res.status(200).json(response)
@@ -137,10 +138,10 @@ export const getAllUser = async (req, res) => {
   }
 }
 
-export const getDetailUser = async (req, res) => {
+export const getUserById = async (req, res) => {
   try {
-    const userId = req.params.userId
-    const response = await getDetailUserService(userId)
+    const userId = req.params.id
+    const response = await getDetailUser(userId)
 
     if (response) {
       return res.status(200).json(response)

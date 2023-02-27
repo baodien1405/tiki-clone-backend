@@ -127,7 +127,7 @@ export const deleteUser = async (id) => {
   }
 }
 
-export const getAllUserService = async () => {
+export const getUsersService = async () => {
   try {
     const users = await User.find()
     if (users) {
@@ -142,7 +142,7 @@ export const getAllUserService = async () => {
   }
 }
 
-export const getDetailUserService = async (id) => {
+export const getDetailUser = async (id) => {
   try {
     const existUser = await User.findById(id)
 
