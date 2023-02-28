@@ -15,14 +15,14 @@ export const validatePassword = async (enteredPassword, savedPassword, salt) => 
 }
 
 export const generateAccessToken = (payload) => {
-  return jwt.sign(payload, ACCESS_TOKEN, { expiresIn: '30s' })
+  return jwt.sign(payload, ACCESS_TOKEN, { expiresIn: '1d' })
 }
 
 export const generateRefreshToken = (payload) => {
   return jwt.sign(payload, REFRESH_TOKEN, { expiresIn: '365d' })
 }
 
-export const ValidateSignature = async (req) => {
+export const ValidateSignatureForAdmin = async (req) => {
   const signature = req.get('Authorization')
 
   if (signature) {
@@ -44,6 +44,18 @@ export const ValidateSignatureForUser = async (req, res) => {
     if (payload.isAdmin || payload.id === userId) {
       return true
     }
+  }
+
+  return false
+}
+
+export const ValidateSignature = async (req, res) => {
+  const signature = req.get('Authorization')
+
+  if (signature) {
+    const payload = await jwt.verify(signature.split(' ')[1], ACCESS_TOKEN)
+    req.user = payload
+    return true
   }
 
   return false

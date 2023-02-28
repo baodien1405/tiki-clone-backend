@@ -3,9 +3,9 @@ import { MONGO_URI } from '../config/index.js'
 
 mongoose.set('strictQuery', true)
 class Database {
-  constructor() {
-    this.connect()
-  }
+  // constructor() {
+  //   this.connect()
+  // }
 
   async connect(type = 'mongodb') {
     try {

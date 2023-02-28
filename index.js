@@ -7,11 +7,11 @@ import morgan from 'morgan'
 import * as dotenv from 'dotenv'
 
 import { PORT } from './src/config/index.js'
-import * as dbConnection from './src/services/Database.js'
+import { instanceMongoDB as dbConnection } from './src/services/Database.js'
 import App from './src/utility/ExpressApp.js'
 dotenv.config()
 
-const DELAY = 0
+const DELAY = 1000
 
 const StartServer = async () => {
   const app = express()
@@ -39,7 +39,7 @@ const StartServer = async () => {
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
 
-  dbConnection
+  await dbConnection.connect()
   await App(app)
 
   app.listen(PORT, () => {

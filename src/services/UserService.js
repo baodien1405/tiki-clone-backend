@@ -88,7 +88,7 @@ export const updateUser = async (id, data) => {
 
     if (!existUser) {
       return {
-        status: 'OK',
+        status: 'ERROR',
         message: 'The user is not defined'
       }
     }
@@ -97,7 +97,7 @@ export const updateUser = async (id, data) => {
 
     return {
       status: 'OK',
-      message: 'Success',
+      message: 'Update success!',
       data: updatedUser
     }
   } catch (error) {

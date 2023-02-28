@@ -93,11 +93,13 @@ export const updateUserById = async (req, res) => {
     const userId = req.params.id
     const response = await updateUser(userId, req.body)
 
-    if (response) {
+    if (response.status === 'OK') {
       return res.status(200).json(response)
     }
 
-    return res.status(404).json({ message: 'Update user error' })
+    if (response.status === 'ERROR') {
+      return res.status(422).json(response)
+    }
   } catch (error) {
     return res.status(404).json({
       message: error
@@ -148,6 +150,23 @@ export const getUserById = async (req, res) => {
     }
 
     return res.status(404).json({ message: 'Get detail user error' })
+  } catch (error) {
+    return res.status(404).json({
+      message: error
+    })
+  }
+}
+
+export const getProfile = async (req, res) => {
+  try {
+    const user = req.user
+    const response = await getDetailUser(user.id)
+
+    if (response) {
+      return res.status(200).json(response)
+    }
+
+    return res.status(404).json({ message: 'Failed to fetch profile' })
   } catch (error) {
     return res.status(404).json({
       message: error
