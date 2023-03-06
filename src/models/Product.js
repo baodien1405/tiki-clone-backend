@@ -8,9 +8,18 @@ const productSchema = new mongoose.Schema(
     price: { type: Number, required: true },
     countInStock: { type: Number, required: true },
     rating: { type: Number, required: true },
-    description: { type: String, required: true }
+    description: { type: String, required: true },
+    discount: { type: Number },
+    quantitySold: { type: Number }
   },
   {
+    toJSON: {
+      transform(doc, ret) {
+        delete ret.__v
+        delete ret.createdAt
+        delete ret.updatedAt
+      }
+    },
     timestamps: true
   }
 )

@@ -11,14 +11,21 @@ export const createProduct = async (req, res) => {
     const { name, image, type, price, countInStock, rating, description } = req.body
 
     if ((!name || !image || !type || !price || !countInStock || !rating, !description)) {
-      return res.status(200).json({
+      return res.status(422).json({
         status: 'ERROR',
         message: 'The input is required'
       })
     }
 
     const response = await createProductService(req.body)
-    return res.status(200).json(response)
+
+    if (response.status === 'ERROR') {
+      return res.status(422).json(response)
+    }
+
+    if (response.status === 'OK') {
+      return res.status(201).json(response)
+    }
   } catch (error) {
     return res.status(404).json({
       message: error
@@ -31,11 +38,13 @@ export const updateProductById = async (req, res) => {
     const productId = req.params.id
     const response = await updateProductService(productId, req.body)
 
-    if (response) {
-      return res.status(200).json(response)
+    if (response.status === 'ERROR') {
+      return res.status(422).json(response)
     }
 
-    return res.status(404).json({ message: 'Update product error' })
+    if (response.status === 'OK') {
+      return res.status(200).json(response)
+    }
   } catch (error) {
     return res.status(404).json({
       message: error
@@ -48,11 +57,13 @@ export const deleteProductById = async (req, res) => {
     const productId = req.params.id
     const response = await deleteProductService(productId)
 
-    if (response) {
-      return res.status(200).json(response)
+    if (response.status === 'ERROR') {
+      return res.status(422).json(response)
     }
 
-    return res.status(404).json({ message: 'Delete product error' })
+    if (response.status === 'OK') {
+      return res.status(200).json(response)
+    }
   } catch (error) {
     return res.status(404).json({
       message: error

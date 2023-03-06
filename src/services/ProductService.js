@@ -9,7 +9,7 @@ export const createProductService = async (newProduct) => {
 
     if (existProduct !== null) {
       return {
-        status: 'OK',
+        status: 'ERROR',
         message: 'The name of product is already'
       }
     }
@@ -42,7 +42,7 @@ export const updateProductService = async (id, data) => {
 
     if (!existProduct) {
       return {
-        status: 'OK',
+        status: 'ERROR',
         message: 'The product is not defined'
       }
     }
@@ -65,7 +65,7 @@ export const deleteProductService = async (id) => {
 
     if (!existProduct) {
       return {
-        status: 'OK',
+        status: 'ERROR',
         message: 'The product is not defined'
       }
     }
@@ -74,7 +74,7 @@ export const deleteProductService = async (id) => {
 
     return {
       status: 'OK',
-      message: 'Delete product success'
+      message: 'Delete product success!'
     }
   } catch (error) {
     console.log(error)
