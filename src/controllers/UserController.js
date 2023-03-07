@@ -112,11 +112,13 @@ export const deleteUserById = async (req, res) => {
     const userId = req.params.id
     const response = await deleteUser(userId)
 
-    if (response) {
-      return res.status(200).json(response)
+    if (response.status === 'ERROR') {
+      return res.status(422).json(response)
     }
 
-    return res.status(404).json({ message: 'Delete user error' })
+    if (response.status === 'OK') {
+      return res.status(200).json(response)
+    }
   } catch (error) {
     return res.status(404).json({
       message: error
@@ -132,7 +134,7 @@ export const getUsers = async (req, res) => {
       return res.status(200).json(response)
     }
 
-    return res.status(404).json({ message: 'Fetch users error' })
+    return res.status(422).json({ message: 'Fetch users error' })
   } catch (error) {
     return res.status(404).json({
       message: error
@@ -145,11 +147,13 @@ export const getUserById = async (req, res) => {
     const userId = req.params.id
     const response = await getDetailUser(userId)
 
-    if (response) {
-      return res.status(200).json(response)
+    if (response.status === 'ERROR') {
+      return res.status(422).json(response)
     }
 
-    return res.status(404).json({ message: 'Get detail user error' })
+    if (response.status === 'OK') {
+      return res.status(200).json(response)
+    }
   } catch (error) {
     return res.status(404).json({
       message: error

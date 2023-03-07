@@ -111,7 +111,7 @@ export const deleteUser = async (id) => {
 
     if (!existUser) {
       return {
-        status: 'OK',
+        status: 'ERROR',
         message: 'The user is not defined'
       }
     }
@@ -120,7 +120,7 @@ export const deleteUser = async (id) => {
 
     return {
       status: 'OK',
-      message: 'Delete user success'
+      message: 'Delete user success!'
     }
   } catch (error) {
     console.log(error)
@@ -148,7 +148,7 @@ export const getDetailUser = async (id) => {
 
     if (!existUser) {
       return {
-        status: 'OK',
+        status: 'ERROR',
         message: 'The user is not found'
       }
     }
