@@ -105,6 +105,20 @@ export const updateUser = async (id, data) => {
   }
 }
 
+export const restoreUser = async (id) => {
+  try {
+    const updatedUser = await User.restore({ _id: id })
+
+    return {
+      status: 'OK',
+      message: 'Restore success!',
+      data: updatedUser
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const deleteUser = async (id) => {
   try {
     const existUser = await User.findById(id)
@@ -116,7 +130,7 @@ export const deleteUser = async (id) => {
       }
     }
 
-    await User.findByIdAndDelete(id)
+    await User.delete({ _id: id })
 
     return {
       status: 'OK',
@@ -127,9 +141,39 @@ export const deleteUser = async (id) => {
   }
 }
 
+export const forceDeleteUser = async (id) => {
+  try {
+    await User.deleteOne({ _id: id })
+
+    return {
+      status: 'OK',
+      message: 'Force delete user success!'
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const getUsersService = async () => {
   try {
-    const users = await User.find()
+    const [users, deletedCount] = await Promise.all([User.find({ isAdmin: false }), User.countDocumentsDeleted()])
+
+    if (users) {
+      return {
+        status: 'OK',
+        message: 'Success',
+        data: users,
+        deletedCount: deletedCount
+      }
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const getTrashUsersService = async () => {
+  try {
+    const users = await User.findDeleted()
     if (users) {
       return {
         status: 'OK',

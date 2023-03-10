@@ -5,7 +5,10 @@ import {
   deleteUser,
   getUsersService,
   getDetailUser,
-  refreshTokenService
+  refreshTokenService,
+  getTrashUsersService,
+  restoreUser,
+  forceDeleteUser
 } from '../services/index.js'
 
 export const userSignUp = async (req, res) => {
@@ -107,6 +110,25 @@ export const updateUserById = async (req, res) => {
   }
 }
 
+export const restoreUserById = async (req, res) => {
+  try {
+    const userId = req.params.id
+    const response = await restoreUser(userId)
+
+    if (response.status === 'OK') {
+      return res.status(200).json(response)
+    }
+
+    if (response.status === 'ERROR') {
+      return res.status(422).json(response)
+    }
+  } catch (error) {
+    return res.status(404).json({
+      message: error
+    })
+  }
+}
+
 export const deleteUserById = async (req, res) => {
   try {
     const userId = req.params.id
@@ -126,9 +148,44 @@ export const deleteUserById = async (req, res) => {
   }
 }
 
+export const forceDeleteUserById = async (req, res) => {
+  try {
+    const userId = req.params.id
+    const response = await forceDeleteUser(userId)
+
+    if (response.status === 'ERROR') {
+      return res.status(422).json(response)
+    }
+
+    if (response.status === 'OK') {
+      return res.status(200).json(response)
+    }
+  } catch (error) {
+    return res.status(404).json({
+      message: error
+    })
+  }
+}
+
 export const getUsers = async (req, res) => {
   try {
     const response = await getUsersService()
+
+    if (response) {
+      return res.status(200).json(response)
+    }
+
+    return res.status(422).json({ message: 'Fetch users error' })
+  } catch (error) {
+    return res.status(404).json({
+      message: error
+    })
+  }
+}
+
+export const trashUsers = async (req, res) => {
+  try {
+    const response = await getTrashUsersService()
 
     if (response) {
       return res.status(200).json(response)

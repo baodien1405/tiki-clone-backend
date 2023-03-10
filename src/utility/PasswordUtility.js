@@ -15,7 +15,7 @@ export const validatePassword = async (enteredPassword, savedPassword, salt) => 
 }
 
 export const generateAccessToken = (payload) => {
-  return jwt.sign(payload, ACCESS_TOKEN, { expiresIn: '1d' })
+  return jwt.sign(payload, ACCESS_TOKEN, { expiresIn: '10d' })
 }
 
 export const generateRefreshToken = (payload) => {
