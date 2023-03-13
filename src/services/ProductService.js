@@ -81,6 +81,19 @@ export const deleteProductService = async (id) => {
   }
 }
 
+export const deleteManyProductService = async (productIds) => {
+  try {
+    await Product.deleteMany({ _id: productIds })
+
+    return {
+      status: 'OK',
+      message: 'Delete products success!'
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const getProductsService = async (_page, _limit, _sort, _order, name) => {
   try {
     const totalProduct = await Product.count()

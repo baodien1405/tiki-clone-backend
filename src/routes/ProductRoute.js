@@ -4,7 +4,8 @@ import {
   updateProductById,
   getProducts,
   deleteProductById,
-  getProductById
+  getProductById,
+  deleteManyProduct
 } from '../controllers/index.js'
 import { Authenticate } from '../middlewares/index.js'
 
@@ -14,6 +15,7 @@ router.post('/', createProduct)
 router.get('/', getProducts)
 router.get('/:id', getProductById)
 router.put('/:id', Authenticate, updateProductById)
-router.delete('/:id', deleteProductById)
+router.delete('/many', Authenticate, deleteManyProduct)
+router.delete('/:id', Authenticate, deleteProductById)
 
 export { router as ProductRoute }

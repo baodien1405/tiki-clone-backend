@@ -3,7 +3,8 @@ import {
   updateProductService,
   getProductsService,
   getProductService,
-  deleteProductService
+  deleteProductService,
+  deleteManyProductService
 } from '../services/index.js'
 
 export const createProduct = async (req, res) => {
@@ -56,6 +57,25 @@ export const deleteProductById = async (req, res) => {
   try {
     const productId = req.params.id
     const response = await deleteProductService(productId)
+
+    if (response.status === 'ERROR') {
+      return res.status(422).json(response)
+    }
+
+    if (response.status === 'OK') {
+      return res.status(200).json(response)
+    }
+  } catch (error) {
+    return res.status(404).json({
+      message: error
+    })
+  }
+}
+
+export const deleteManyProduct = async (req, res) => {
+  try {
+    const productIds = req.body
+    const response = await deleteManyProductService(productIds)
 
     if (response.status === 'ERROR') {
       return res.status(422).json(response)
